@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CIRCUIT ATELIER</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #0c0c0c;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            letter-spacing: 3px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: #ccff00;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .login-card {
+            background-color: #141414;
+            border: 1px solid #222222;
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .role-selectors {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .role-card {
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 20px 16px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .role-card:hover {
+            border-color: #555555;
+            background-color: #1e1e1e;
+        }
+
+        .role-card.active {
+            border-color: #ccff00;
+            box-shadow: 0 0 15px rgba(204, 255, 0, 0.15);
+            background-color: #1c1f10;
+        }
+
+        .role-card i {
+            font-size: 24px;
+            color: #666666;
+            transition: color 0.2s ease;
+        }
+
+        .role-card.active i {
+            color: #ccff00;
+        }
+
+        .role-card span {
+            font-size: 13px;
+            font-weight: 600;
+            color: #888888;
+            transition: color 0.2s ease;
+        }
+
+        .role-card.active span {
+            color: #ffffff;
+        }
+        
+        .role-card input[type="radio"] {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888888;
+            font-weight: 700;
+        }
+
+        .form-group input[type="email"],
+        .form-group input[type="password"],
+        .form-group input[type="text"] {
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
+            padding: 14px 16px;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-group input:focus {
+            border-color: #ccff00;
+            box-shadow: 0 0 0 1px rgba(204, 255, 0, 0.3);
+        }
+
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            font-size: 13px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #aaaaaa;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1px solid #555555;
+            border-radius: 3px;
+            background-color: #1a1a1a;
+            cursor: pointer;
+            position: relative;
+            outline: none;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked {
+            background-color: #ccff00;
+            border-color: #ccff00;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked::after {
+            content: '✔';
+            position: absolute;
+            color: #0c0c0c;
+            font-size: 10px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+        }
+
+        .reset-link {
+            color: #888888;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .reset-link:hover {
+            color: #ffffff;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: #ccff00;
+            color: #0c0c0c;
+            border: none;
+            padding: 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #d4ff33;
+        }
+        
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        .submit-btn i {
+            font-size: 12px;
+            transition: transform 0.2s ease;
+        }
+        
+        .submit-btn:hover i {
+            transform: translateX(4px);
+        }
+
+        .footer {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 13px;
+            color: #888888;
+        }
+
+        .footer a {
+            color: #ccff00;
+            text-decoration: none;
+            font-weight: 600;
+            transition: text-shadow 0.2s ease;
+        }
+
+        .footer a:hover {
+            text-shadow: 0 0 8px rgba(204, 255, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>CIRCUIT ATELIER</h1>
+        <p>AI-POWERED ELECTRONIC DESIGN</p>
+    </div>
+
+    <div class="login-card">
+        <form id="loginForm" action="index.html">
+            
+            <div class="role-selectors">
+                <label class="role-card active" id="card-engineer">
+                    <input type="radio" name="role" value="engineer" checked>
+                    <i class="fa-solid fa-microchip"></i>
+                    <span>Engineer / User Access</span>
+                </label>
+                
+                <label class="role-card" id="card-admin">
+                    <input type="radio" name="role" value="admin">
+                    <i class="fa-solid fa-server"></i>
+                    <span>Administrator Access</span>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" value="sejalkachare2007@gmail.com" required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" value="password123" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+
+            <div class="options-row">
+                <label class="checkbox-group">
+                    <input type="checkbox" id="remember" checked>
+                    <span>Keep session active</span>
+                </label>
+                <a href="#" class="reset-link">Reset Password</a>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                INITIALIZE SESSION <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            
+        </form>
+
+        <div class="footer">
+            No credentials? <a href="#">Request Access</a>
+        </div>
+    </div>
+
+    <script>
+        // Handle Role Card Selection Toggling
+        const roleCards = document.querySelectorAll('.role-card');
+        const radios = document.querySelectorAll('input[name="role"]');
+
+        roleCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove active class from all
+                roleCards.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked
+                this.classList.add('active');
+            });
+        });
+
+        // Handle Form Submission Redirection
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Set session flag so the application knows the user is logged in
+            sessionStorage.setItem('isLoggedIn', 'true');
+            
+            // Redirect back to the main app dashboard (index.html)
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuit Atelier - Antigravity IDE Workspace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top IDE Menu & Toolbar Bar */
+        .ide-topbar {
+            height: 48px;
+            background: #0f172a;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .topbar-left, .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .app-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            color: #38bdf8;
+        }
+
+        .menu-items {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .menu-items span {
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .menu-items span:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #f1f5f9;
+        }
+
+        /* Center Toolbar Quick Input */
+        .ai-prompt-bar {
+            display: flex;
+            align-items: center;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 4px 12px;
+            width: 380px;
+            gap: 8px;
+        }
+
+        .ai-prompt-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-size: 12px;
+            width: 100%;
+        }
+
+        .action-btn {
+            background: #38bdf8;
+            color: #0b0f19;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            background: #0ea5e9;
+        }
+
+        /* Main Workspace Grid (Sidebar | Canvas | Agent Panel) */
+        .ide-workspace {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 240px 1fr 320px;
+            height: calc(100vh - 48px - 24px);
+        }
+
+        /* Left Sidebar - File Explorer / Components */
+        .sidebar-left {
+            background: #0f172a;
+            border-right: 1px solid #1e293b;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .tree-item {
+            font-size: 12px;
+            color: #cbd5e1;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tree-item:hover, .tree-item.active {
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+        }
+
+        /* Center Canvas Workspace */
+        .canvas-area {
+            background: #030712;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .canvas-placeholder {
+            text-align: center;
+            color: #64748b;
+        }
+
+        .canvas-placeholder i {
+            font-size: 40px;
+            color: #334155;
+            margin-bottom: 12px;
+        }
+
+        /* Right Agent Panel (Antigravity Shared Agent Harness) */
+        .agent-panel {
+            background: #0f172a;
+            border-left: 1px solid #1e293b;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .agent-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #1e293b;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #38bdf8;
+        }
+
+        .agent-chat-body {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-bubble {
+            background: #1e293b;
+            padding: 10px 12px;
+            border-radius: 8px;
+            line-height: 1.4;
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .chat-bubble.agent {
+            background: rgba(56, 189, 248, 0.08);
+            border-color: rgba(56, 189, 248, 0.2);
+        }
+
+        .agent-input-box {
+            padding: 12px;
+            border-top: 1px solid #1e293b;
+            background: #0f172a;
+        }
+
+        .agent-input-box textarea {
+            width: 100%;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px;
+            color: #ffffff;
+            font-size: 12px;
+            outline: none;
+            resize: none;
+            height: 50px;
+        }
+
+        /* Bottom Status Bar */
+        .ide-statusbar {
+            height: 24px;
+            background: #0284c7;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top IDE Navigation Bar -->
+    <header class="ide-topbar">
+        <div class="topbar-left">
+            <div class="app-brand">
+                <i class="fa-solid fa-atom"></i> ANTIGRAVITY IDE
+            </div>
+            <div class="menu-items">
+                <span>File</span>
+                <span>Edit</span>
+                <span>Selection</span>
+                <span>View</span>
+                <span>Run</span>
+                <span>Terminal</span>
+            </div>
+        </div>
+
+        <div class="ai-prompt-bar">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: #38bdf8; font-size: 11px;"></i>
+            <input type="text" placeholder="Ask Antigravity Agent to generate circuit nodes...">
+            <button class="action-btn">Generate</button>
+        </div>
+
+        <div class="topbar-right">
+            <span style="font-size: 11px; color: #38bdf8;"><i class="fa-solid fa-circle" style="font-size: 8px;"></i> Ollama Connected</span>
+        </div>
+    </header>
+
+    <!-- Main Workspace Area -->
+    <div class="ide-workspace">
+        
+        <!-- Left Sidebar: Project Tree -->
+        <div class="sidebar-left">
+            <div class="sidebar-title">Explorer</div>
+            <div class="tree-item active"><i class="fa-solid fa-folder-open" style="color: #38bdf8;"></i> AI-Circuit-Designer</div>
+            <div class="tree-item" style="padding-left: 20px;"><i class="fa-solid fa-folder"></i> backend</div>
+            <div class="tree-item" style="padding-left: 36px;"><i class="fa-brands fa-python" style="color: #fbbf24;"></i> app.py</div>
+            <div class="tree-item" style="padding-left: 36px;"><i class="fa-brands fa-python" style="color: #fbbf24;"></i> config.py</div>
+            <div class="tree-item" style="padding-left: 20px;"><i class="fa-solid fa-folder"></i> frontend</div>
+            <div class="tree-item" style="padding-left: 36px;"><i class="fa-solid fa-code" style="color: #f43f5e;"></i> index.html</div>
+            <div class="tree-item" style="padding-left: 36px;"><i class="fa-solid fa-file-lines" style="color: #38bdf8;"></i> login.html</div>
+            <div class="tree-item" style="padding-left: 20px;"><i class="fa-solid fa-file-shield" style="color: #a3e635;"></i> requirements.txt</div>
+        </div>
+
+        <!-- Center Canvas Workspace -->
+        <div class="canvas-area">
+            <div class="canvas-placeholder">
+                <i class="fa-solid fa-microchip"></i>
+                <h3>Antigravity Interactive Schematic Canvas</h3>
+                <p>Drag components from library or prompt local AI to scaffold circuit routing.</p>
+            </div>
+        </div>
+
+        <!-- Right Side: Agent Orchestration Panel -->
+        <div class="agent-panel">
+            <div class="agent-header">
+                <span><i class="fa-solid fa-robot"></i> Antigravity Agent</span>
+                <i class="fa-solid fa-sliders" style="cursor: pointer;"></i>
+            </div>
+            
+            <div class="agent-chat-body">
+                <div class="chat-bubble">
+                    <strong>System Initialized:</strong> Active workspace context loaded successfully on Flask port 5000.
+                </div>
+                <div class="chat-bubble agent">
+                    Ready to build circuit logic models or assist with frontend routing. How can I help you refine your design?
+                </div>
+            </div>
+
+            <div class="agent-input-box">
+                <textarea placeholder="Describe circuit or edit instruction..."></textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Status Bar -->
+    <footer class="ide-statusbar">
+        <div>main* (Flask Backend Active)</div>
+        <div>UTF-8 • Python 3.11 • Antigravity Agent v2.5</div>
+    </footer>
+
+</body>
+</html>

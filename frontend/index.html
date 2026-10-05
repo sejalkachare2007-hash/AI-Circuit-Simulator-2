@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIRCUIT ATELIER - AI-Powered Electronic Design Laboratory</title>
+    <script>
+        if (!sessionStorage.getItem('isLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+        
+        // Prevent theme flash
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="stylesheet" type="text/css" href="./css/component-3d.css">
+    <!-- Three.js for 3D component rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body class="is-home-view">
+    <div class="app-container">
+        
+        <!-- LEFT NAVIGATION -->
+        <nav class="side-nav">
+            <div class="brand">
+                CIRCUIT ATELIER
+                <span>AI-Powered Electronic Design</span>
+            </div>
+            
+            <div class="nav-section">Workspace</div>
+            <div class="nav-item active" data-view="view-home">Home</div>
+            <div class="nav-item" data-view="view-design">Design</div>
+            <div class="nav-item" data-view="view-ai-builder">AI Builder</div>
+            <div class="nav-item" data-view="view-projects">Projects</div>
+            <div class="nav-item" data-view="view-components">Components</div>
+        </nav>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="main-content" style="position: relative;">
+            
+            <!-- GLOBAL THEME TOGGLE -->
+            <div id="theme-toggle-container" style="position: absolute; top: 12px; right: 20px; z-index: 1000;">
+                <div class="theme-switch" onclick="toggleTheme()" style="display: flex; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; cursor: pointer; user-select: none;" role="switch" aria-label="Toggle light and dark mode" tabindex="0" onkeydown="if(event.key==='Enter' || event.key===' ') { toggleTheme(); event.preventDefault(); }">
+                    <div id="theme-btn-light" style="padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
+                        <span style="font-size: 14px;">☀</span> Light
+                    </div>
+                    <div id="theme-btn-dark" style="padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--text-primary); background: var(--bg-panel); display: flex; align-items: center; gap: 4px;">
+                        <span style="font-size: 12px;">☾</span> Dark
+                    </div>
+                </div>
+            </div>
+            
+            <!-- HOME VIEW (LANDING PAGE) -->
+            <div id="view-home" class="view-panel active landing-page">
+                <!-- HEADER -->
+                <header class="home-nav-header">
+                    <div class="home-nav-brand">
+                        <span class="title">Circuit Atelier</span>
+                        <span class="subtitle">All-in-one circuit design IDE</span>
+                    </div>
+                    <nav class="home-nav-links">
+                        <button onclick="switchView('view-projects')">My Projects</button>
+                        <a href="#">Pricing</a>
+                        <a href="#">EN</a>
+                        <div class="theme-switch" onclick="toggleTheme()" style="display: flex; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; cursor: pointer; user-select: none;" role="switch" aria-label="Toggle light and dark mode">
+                            <div id="landing-theme-light" style="padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">☀ Light</div>
+                            <div id="landing-theme-dark" style="padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--text-primary); background: var(--bg-panel); display: flex; align-items: center; gap: 4px;">☾ Dark</div>
+                        </div>
+                        <a href="login.html" class="btn-signin">Sign in</a>
+                        <a href="login.html" class="btn-signup">Sign up</a>
+                    </nav>
+                </header>
+
+                <div class="home-section">
+                    <h2 class="home-section-title">START A NEW CIRCUIT PROJECT</h2>
+                    <div class="start-cards-grid">
+                        <div class="start-card highlight" onclick="switchView('view-design')">
+                            <div class="start-card-icon">✦</div>
+                            <h3>Start From Scratch</h3>
+                            <p>Create a new circuit from a blank canvas</p>
+                            <button>Start Designing</button>
+                        </div>
+                        <div class="start-card" onclick="switchView('view-design')">
+                            <div class="start-card-icon">🎓</div>
+                            <h3>Quick Start Guide</h3>
+                            <p>Learn the essentials of circuit design</p>
+                            <button>Learn More</button>
+                        </div>
+                        <div class="start-card" onclick="switchView('view-design')">
+                            <div class="start-card-icon">▶</div>
+                            <h3>Discover Simulation</h3>
+                            <p>Learn how to simulate circuits</p>
+                            <button>Explore Simulation</button>
+                        </div>
+                        <div class="start-card" onclick="switchView('view-design')">
+                            <div class="start-card-icon">💡</div>
+                            <h3>Explore Key Features</h3>
+                            <p>Take a closer look at our top features</p>
+                            <button>Explore Features</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="home-section">
+                    <h2 class="home-section-title">FEATURED SIMULATION PROJECTS</h2>
+                    <div class="featured-projects-grid">
+                        <div class="featured-card">
+                            <div class="featured-img">⚙️</div>
+                            <div class="featured-content">
+                                <h3>Custom AI Processor Unit</h3>
+                                <p>A complex neural processing architecture.</p>
+                                <button onclick="switchView('view-design')">Open Project</button>
+                            </div>
+                        </div>
+                        <div class="featured-card">
+                            <div class="featured-img">📡</div>
+                            <div class="featured-content">
+                                <h3>IoT Sensor Network</h3>
+                                <p>Microcontroller-based environmental sensing.</p>
+                                <button onclick="switchView('view-design')">Open Project</button>
+                            </div>
+                        </div>
+                        <div class="featured-card">
+                            <div class="featured-img">🧮</div>
+                            <div class="featured-content">
+                                <h3>Quantum Logic Gate Array</h3>
+                                <p>Experimental logic gate configurations.</p>
+                                <button onclick="switchView('view-design')">Open Project</button>
+                            </div>
+                        </div>
+                        <div class="featured-card">
+                            <div class="featured-img">📻</div>
+                            <div class="featured-content">
+                                <h3>Mixed-Signal IC Design</h3>
+                                <p>Analog and digital integration.</p>
+                                <button onclick="switchView('view-design')">Open Project</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="home-section">
+                    <div class="home-ai-section">
+                        <h2>AI CIRCUIT BUILDER</h2>
+                        <p>Describe your circuit in natural language and let AI generate the design.</p>
+                        <div class="home-ai-input">
+                            <input type="text" id="landing-ai-input" placeholder="Create a circuit using a 9V battery, 220 ohm resistor and LED.">
+                            <button onclick="handleLandingAiSubmit()">BUILD CIRCUIT ↗</button>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="home-footer">
+                    <div>Circuit Atelier</div>
+                    <div style="margin-top: 8px;">AI-Powered Electronic Design Laboratory</div>
+                </footer>
+            </div>
+
+            <script>
+                function handleLandingAiSubmit() {
+                    const input = document.getElementById('landing-ai-input').value;
+                    if (input.trim() === '') return;
+                    
+                    if (typeof switchView === 'function') {
+                        switchView('view-design');
+                        
+                        setTimeout(() => {
+                            const aiTextarea = document.getElementById('ai-prompt-input');
+                            if (aiTextarea) {
+                                aiTextarea.value = input;
+                                const btn = document.getElementById('btn-generate');
+                                if (btn) btn.click();
+                            }
+                        }, 300);
+                    }
+                }
+            </script>
+
+            <!-- AI BUILDER VIEW -->
+            <div id="view-ai-builder" class="view-panel ai-builder-view">
+                <div class="ai-header">
+                    ✦ AI CIRCUIT BUILDER
+                </div>
+                <div class="ai-subtitle">Describe what you want to build.</div>
+                
+                <div class="ai-input-area">
+                    <textarea id="legacy-ai-prompt-input" placeholder="Create a circuit to turn on an LED using a push button."></textarea>
+                    <div class="ai-status-bar">
+                        <div class="ai-status-text" id="ai-status-indicator">● AI READY</div>
+                        <button id="legacy-btn-generate" class="btn-primary">BUILD ↗</button>
+                    </div>
+                </div>
+                
+                <div class="ai-examples">
+                    <h3>Examples</h3>
+                    <div class="example-tags">
+                        <div class="example-tag" onclick="document.getElementById('ai-prompt-input').value=this.innerText">Create a 9V LED circuit with a 220 ohm resistor.</div>
+                        <div class="example-tag" onclick="document.getElementById('ai-prompt-input').value=this.innerText">Create a push button LED circuit.</div>
+                        <div class="example-tag" onclick="document.getElementById('ai-prompt-input').value=this.innerText">Create a voltage divider using two resistors.</div>
+                    </div>
+                </div>
+                
+                <div class="ai-sequence" id="ai-processing-sequence">
+                    <div class="sequence-step">PROMPT</div>
+                    <div class="sequence-arrow">↓</div>
+                    <div class="sequence-step">UNDERSTANDING</div>
+                    <div class="sequence-arrow">↓</div>
+                    <div class="sequence-step">COMPONENT DETECTION</div>
+                    <div class="sequence-arrow">↓</div>
+                    <div class="sequence-step">CONNECTION MAPPING</div>
+                    <div class="sequence-arrow">↓</div>
+                    <div class="sequence-step">VALIDATION</div>
+                    <div class="sequence-arrow">↓</div>
+                    <div class="sequence-step">CIRCUIT READY</div>
+                </div>
+            </div>
+            
+            <!-- DESIGNER VIEW (Main Workspace) -->
+            <div id="view-design" class="view-panel designer-view">
+                <!-- NEW DESIGNER HEADER -->
+                <header class="designer-header">
+                    <div class="dh-left">
+                        <div class="dh-brand"><i class="fa-solid fa-atom"></i> Circuit Atelier</div>
+                        <div class="dh-title">Untitled circuit design</div>
+                        <div class="dh-nav">
+                            <span class="dh-nav-item">File</span>
+                            <span class="dh-nav-item">Edit</span>
+                            <span class="dh-nav-item">Help</span>
+                        </div>
+                        <div class="dh-tabs">
+                            <span class="dh-tab active">Design</span>
+                            <span class="dh-tab">Code</span>
+                            <span class="dh-tab">Simulate</span>
+                            <span class="dh-tab">Upload</span>
+                        </div>
+                    </div>
+                    <div class="dh-right">
+                        <div class="theme-switch dh-theme" onclick="toggleTheme()" role="switch" tabindex="0">
+                            <div id="designer-theme-light" class="theme-btn"><i class="fa-solid fa-sun"></i> Light</div>
+                            <div id="designer-theme-dark" class="theme-btn"><i class="fa-solid fa-moon"></i> Dark</div>
+                        </div>
+                        <span class="dh-action">EN</span>
+                        <span class="dh-action" onclick="document.getElementById('ai-prompt-input').focus()"><i class="fa-solid fa-bolt"></i> Circuit AI</span>
+                        <span class="dh-action"><i class="fa-solid fa-download"></i> Export</span>
+                        <span class="dh-action"><i class="fa-solid fa-share-nodes"></i> Share</span>
+                        <a href="login.html" class="dh-btn dh-signin">Sign in</a>
+                        <a href="login.html" class="dh-btn dh-signup">Sign up</a>
+                        <!-- Hidden legacy buttons to prevent JS errors -->
+                        <div style="display:none;">
+                            <button id="btn-new">New</button>
+                            <button id="btn-open">Open</button>
+                            <button id="btn-save">Save</button>
+                            <button id="btn-undo">Undo</button>
+                            <button id="btn-redo">Redo</button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- DESIGNER LAYOUT -->
+                <div class="designer-layout">
+                    <!-- LEFT SIDEBAR -->
+                    <aside class="left-sidebar">
+                        <div class="ls-search">
+                            <i class="fa-solid fa-search"></i>
+                            <input type="text" id="component-search-input" placeholder="Search Components">
+                        </div>
+                        <div class="ls-filters" style="padding: 10px 15px; display: flex; gap: 8px;">
+                            <select id="component-category-filter" style="width: 100%; padding: 6px; border-radius: 4px; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-color);">
+                                <option value="ALL">All Categories</option>
+                            </select>
+                        </div>
+                        <div class="ls-tabs">
+                            <div class="ls-tab active">Diagramming Parts</div>
+                            <div class="ls-tab">Simulation Parts</div>
+                        </div>
+                        <div class="ls-options">
+                            <label><input type="checkbox" checked> Include beta parts</label>
+                        </div>
+                        <button class="ls-btn-custom"><i class="fa-solid fa-plus"></i> Create Custom Component</button>
+                        
+                        <div id="component-library" class="component-library-content">
+                            <!-- Loaded dynamically via JS -->
+                        </div>
+                    </aside>
+
+                    <!-- CENTER CANVAS -->
+                    <main class="center-canvas-container" id="canvas-container">
+                        <!-- CANVAS TOOLBAR -->
+                        <div class="canvas-toolbar">
+                            <button id="btn-simulate" class="ct-btn ct-play" title="Simulate"><i class="fa-solid fa-play"></i></button>
+                            <div class="ct-divider"></div>
+                            <button class="ct-btn" title="Text"><i class="fa-solid fa-font"></i></button>
+                            <button id="btn-wire" class="ct-btn" title="Wire Tool"><i class="fa-solid fa-bezier-curve"></i></button>
+                            <button class="ct-btn" title="Grid"><i class="fa-solid fa-border-all"></i></button>
+                            <div class="ct-divider"></div>
+                            <button class="ct-btn" title="Rotate Left"><i class="fa-solid fa-rotate-left"></i></button>
+                            <button id="btn-rotate" class="ct-btn" title="Rotate Right"><i class="fa-solid fa-rotate-right"></i></button>
+                            <button id="btn-fit" class="ct-btn" title="Fit"><i class="fa-solid fa-expand"></i></button>
+                            <button id="btn-zoom-out" class="ct-btn" title="Zoom Out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                            <button id="btn-zoom-in" class="ct-btn" title="Zoom In"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                            <button id="btn-delete" class="ct-btn ct-delete" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        
+                        <!-- AI PROMPT PANEL (Absolute positioned) -->
+                        <div class="ai-prompt-overlay">
+                            <div class="ai-overlay-header">
+                                <span class="ai-badge active">✦ Design a circuit</span>
+                                <span class="ai-badge">Pick parts</span>
+                            </div>
+                            <div class="ai-overlay-body">
+                                <textarea id="ai-prompt-input" placeholder="Describe what you want to build or change..."></textarea>
+                                <div class="ai-overlay-footer">
+                                    <button class="ai-btn-plus"><i class="fa-solid fa-plus"></i></button>
+                                    <label class="ai-toggle"><input type="checkbox"> Research</label>
+                                    <div class="ai-mode-selector">
+                                        <span>Basic</span> · <span class="active">Light</span>
+                                    </div>
+                                    <button id="btn-generate" class="ai-btn-send"><i class="fa-solid fa-paper-plane"></i></button>
+                                </div>
+                            </div>
+                            <div id="ai-explanation-text" class="ai-explanation-overlay"></div>
+                        </div>
+
+                        <svg id="circuit-canvas" width="100%" height="100%" tabindex="0">
+                            <defs>
+                                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <rect width="20" height="20" fill="none" />
+                                    <circle cx="10" cy="10" r="1" fill="var(--grid-color)" />
+                                </pattern>
+                                <!-- Component Symbols -->
+                                <g id="sym-battery">
+                                    <line x1="-15" y1="0" x2="-5" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="-5" y1="-15" x2="-5" y2="15" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="5" y1="-10" x2="5" y2="10" stroke="currentColor" stroke-width="4"/>
+                                    <line x1="5" y1="0" x2="15" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <text x="-12" y="-18" font-size="10" fill="currentColor">+</text>
+                                    <circle class="pin-hitbox" cx="-15" cy="0" r="4" data-pin="positive" />
+                                    <circle class="pin-hitbox" cx="15" cy="0" r="4" data-pin="negative" />
+                                </g>
+                                <g id="sym-resistor">
+                                    <line x1="-20" y1="0" x2="-10" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="-10,0 -7,-8 -1,8 5,-8 10,0" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="10" y1="0" x2="20" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <circle class="pin-hitbox" cx="-20" cy="0" r="4" data-pin="pin1" />
+                                    <circle class="pin-hitbox" cx="20" cy="0" r="4" data-pin="pin2" />
+                                </g>
+                                <g id="sym-ground">
+                                    <line x1="0" y1="-15" x2="0" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="-10" y1="0" x2="10" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="-6" y1="4" x2="6" y2="4" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="-2" y1="8" x2="2" y2="8" stroke="currentColor" stroke-width="2"/>
+                                    <circle class="pin-hitbox" cx="0" cy="-15" r="4" data-pin="pin1" />
+                                </g>
+                                <g id="sym-led">
+                                    <line x1="-15" y1="0" x2="-10" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <polygon points="-10,-10 -10,10 5,0" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="5" y1="-10" x2="5" y2="10" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="5" y1="0" x2="15" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="-2" y1="-10" x2="5" y2="-17" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <line x1="3" y1="-10" x2="10" y2="-17" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                    <circle class="pin-hitbox" cx="-15" cy="0" r="4" data-pin="anode" />
+                                    <circle class="pin-hitbox" cx="15" cy="0" r="4" data-pin="cathode" />
+                                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+                                    </marker>
+                                </g>
+                                <g id="sym-switch">
+                                    <line x1="-15" y1="0" x2="-5" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="-5" cy="0" r="2" fill="currentColor"/>
+                                    <line x1="-5" y1="0" x2="8" y2="-8" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="5" cy="0" r="2" fill="currentColor"/>
+                                    <line x1="5" y1="0" x2="15" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <circle class="pin-hitbox" cx="-15" cy="0" r="4" data-pin="pin1" />
+                                    <circle class="pin-hitbox" cx="15" cy="0" r="4" data-pin="pin2" />
+                                </g>
+                                <g id="sym-capacitor">
+                                    <line x1="-15" y1="0" x2="-5" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="-5" y1="-10" x2="-5" y2="10" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="5" y1="-10" x2="5" y2="10" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="5" y1="0" x2="15" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <circle class="pin-hitbox" cx="-15" cy="0" r="4" data-pin="positive" />
+                                    <circle class="pin-hitbox" cx="15" cy="0" r="4" data-pin="negative" />
+                                </g>
+                                <g id="sym-diode">
+                                    <line x1="-15" y1="0" x2="-10" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <polygon points="-10,-10 -10,10 5,0" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="5" y1="-10" x2="5" y2="10" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="5" y1="0" x2="15" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <circle class="pin-hitbox" cx="-15" cy="0" r="4" data-pin="anode" />
+                                    <circle class="pin-hitbox" cx="15" cy="0" r="4" data-pin="cathode" />
+                                </g>
+                                <g id="sym-transistor">
+                                    <circle cx="0" cy="0" r="15" fill="none" stroke="currentColor" stroke-width="1"/>
+                                    <line x1="-15" y1="0" x2="-5" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="-5" y1="-10" x2="-5" y2="10" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="-5" y1="-5" x2="5" y2="-12" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="-5" y1="5" x2="5" y2="12" stroke="currentColor" stroke-width="2"/>
+                                    <polygon points="5,12 1,7 7,7" fill="currentColor"/>
+                                    <line x1="5" y1="-12" x2="15" y2="-12" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="5" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/>
+                                    <circle class="pin-hitbox" cx="-15" cy="0" r="4" data-pin="base" />
+                                    <circle class="pin-hitbox" cx="15" cy="-12" r="4" data-pin="collector" />
+                                    <circle class="pin-hitbox" cx="15" cy="12" r="4" data-pin="emitter" />
+                                </g>
+                                <g id="sym-generic">
+                                    <rect x="-10" y="-10" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="-20" y1="0" x2="-10" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="10" y1="0" x2="20" y2="0" stroke="currentColor" stroke-width="2"/>
+                                    <circle class="pin-hitbox" cx="-20" cy="0" r="4" data-pin="pin1" />
+                                    <circle class="pin-hitbox" cx="20" cy="0" r="4" data-pin="pin2" />
+                                </g>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#grid)" class="canvas-bg" />
+                            <g id="canvas-transform" transform="matrix(1 0 0 1 0 0)">
+                                <g id="connections-layer"></g>
+                                <g id="components-layer"></g>
+                            </g>
+                        </svg>
+                    </main>
+
+                    <!-- RIGHT SIDEBAR (INSTRUMENT PANEL) -->
+                    <aside class="right-sidebar">
+                        <div class="sidebar-header">INSTRUMENT PANEL</div>
+                        <div id="properties-panel" class="properties-empty">
+                            <p>Select a component to view and edit its properties.</p>
+                        </div>
+                    </aside>
+                </div>
+
+                <!-- BOTTOM PANEL (ENGINEERING CONSOLE) -->
+                <footer class="bottom-panel">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="tab-components">CIRCUIT STATUS</button>
+                        <button class="tab-btn" data-tab="tab-validation">VALIDATION</button>
+                        <button class="tab-btn ai-tab" data-tab="tab-explanation">✦ AI REASONING</button>
+                        <button class="tab-btn" data-tab="tab-simulation">SIMULATION</button>
+                    </div>
+                    <div class="tab-content-container">
+                        <div id="tab-components" class="tab-content active">
+                            <div style="display: flex; gap: 20px;">
+                                <div style="flex:1;">
+                                    <h4 style="margin-bottom: 10px; color: var(--text-secondary); text-transform: uppercase; font-size: 11px;">Components</h4>
+                                    <div id="components-list"><p>Component list tracking is active.</p></div>
+                                </div>
+                                <div style="flex:1;">
+                                    <h4 style="margin-bottom: 10px; color: var(--text-secondary); text-transform: uppercase; font-size: 11px;">Connections</h4>
+                                    <div id="connections-list"><p>Connection list tracking is active.</p></div>
+                                </div>
+                                <div style="flex:1;" id="tab-history">
+                                    <h4 style="margin-bottom: 10px; color: var(--text-secondary); text-transform: uppercase; font-size: 11px;">History</h4>
+                                    <ul id="history-list"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="tab-validation" class="tab-content">
+                            <button id="btn-run-validation" class="btn-primary" style="margin-bottom: 15px;">Run Validation</button>
+                            <div id="validation-results">
+                                <p>No validation performed yet.</p>
+                            </div>
+                        </div>
+                        
+                        <div id="tab-explanation" class="tab-content">
+                            <div class="ai-reasoning-grid">
+                                <div class="ai-panel-section">
+                                    <h3>Explanation</h3>
+                                    <div class="explanation-content" id="legacy-ai-explanation-text">
+                                        AI explanation will appear here when a circuit is generated.
+                                    </div>
+                                </div>
+                                <div class="ai-panel-section">
+                                    <h3>Detected Features</h3>
+                                    <ul id="ai-detected-features">
+                                        <li style="color: var(--text-secondary);">Waiting for generation...</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="tab-simulation" class="tab-content">
+                            <div class="simulation-panel">
+                                <div class="sim-controls">
+                                    <div class="sim-status">
+                                        <div class="sim-status-dot"></div>
+                                        READY
+                                    </div>
+                                    <button class="btn-primary" style="background-color: var(--color-success); color: #000;">RUN</button>
+                                    <button class="btn-secondary">PAUSE</button>
+                                    <button class="btn-secondary">RESET</button>
+                                </div>
+                                <div class="sim-instruments">
+                                    <div class="instrument">
+                                        <div class="instrument-label">VOLTAGE</div>
+                                        <div class="instrument-value">0.00 V</div>
+                                    </div>
+                                    <div class="instrument">
+                                        <div class="instrument-label">CURRENT</div>
+                                        <div class="instrument-value">0.0 mA</div>
+                                    </div>
+                                    <div class="instrument">
+                                        <div class="instrument-label">POWER</div>
+                                        <div class="instrument-value">0 mW</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            
+            <!-- PROJECTS VIEW -->
+            <div id="view-projects" class="view-panel home-view">
+                <div class="home-header">
+                    <h1>Projects</h1>
+                    <p>Manage your saved circuit designs</p>
+                </div>
+                <div class="project-grid">
+                    <div class="project-card">
+                        <h3>Audio Amplifier</h3>
+                        <div class="project-status status-valid">
+                            <div class="status-dot"></div>
+                            VALID
+                        </div>
+                        <div class="project-meta">12 Components</div>
+                        <button class="btn-secondary" onclick="switchView('view-design')">Open</button>
+                    </div>
+                    <div class="project-card">
+                        <h3>Motor Control</h3>
+                        <div class="project-status status-draft">
+                            <div class="status-dot"></div>
+                            DRAFT
+                        </div>
+                        <div class="project-meta">5 Components</div>
+                        <button class="btn-secondary" onclick="switchView('view-design')">Open</button>
+                    </div>
+                    <div class="project-card" style="display: flex; align-items: center; justify-content: center; min-height: 150px; cursor: pointer;" onclick="switchView('view-design')">
+                        <div style="text-align: center; color: var(--accent-primary);">
+                            <div style="font-size: 24px; margin-bottom: 10px;">+</div>
+                            <div>New Project</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COMPONENTS VIEW -->
+            <div id="view-components" class="view-panel components-view">
+                <div class="component-library-layout">
+                    <!-- LEFT: Sidebar -->
+                    <div class="cl-sidebar">
+                        <div class="cl-search-container">
+                            <input type="text" id="cl-search" class="cl-search-input" placeholder="Search components...">
+                        </div>
+                        <div class="cl-filters">
+                            <select id="cl-category-filter" class="cl-category-select">
+                                <option value="ALL">All Categories</option>
+                            </select>
+                        </div>
+                        <div class="cl-list" id="cl-list">
+                            <!-- Populated by component-3d.js -->
+                            <div style="padding:15px;text-align:center;color:var(--text-secondary);">Loading components...</div>
+                        </div>
+                    </div>
+                    
+                    <!-- CENTER: 3D Viewer -->
+                    <div class="cl-viewer-container">
+                        <div id="cl-3d-canvas"></div>
+                        <div id="cl-3d-msg" class="cl-viewer-overlay-msg">Select a component to inspect</div>
+                        
+                        <div class="cl-viewer-controls">
+                            <button id="cl-btn-left" class="cl-control-btn" title="Rotate Left">↶</button>
+                            <button id="cl-btn-right" class="cl-control-btn" title="Rotate Right">↷</button>
+                            <button id="cl-btn-zoom-in" class="cl-control-btn" title="Zoom In">+</button>
+                            <button id="cl-btn-zoom-out" class="cl-control-btn" title="Zoom Out">−</button>
+                            <button id="cl-btn-reset" class="cl-control-btn" title="Reset View">⟳</button>
+                            <button id="cl-btn-autorotate" class="cl-control-toggle">AUTO ROTATE</button>
+                        </div>
+                    </div>
+                    
+                    <!-- RIGHT: Details Panel -->
+                    <div class="cl-details-panel">
+                        <div id="cl-details-empty" class="cl-details-empty">
+                            <i class="fa-solid fa-microchip" style="font-size: 32px; margin-bottom: 15px;"></i>
+                            <p>Select a component to view details and specifications.</p>
+                        </div>
+                        
+                        <div id="cl-details-content" class="cl-details-content">
+                            <div>
+                                <div class="cl-detail-title" id="cld-name">Component Name</div>
+                                <div class="cl-detail-category" id="cld-category">Category</div>
+                            </div>
+                            
+                            <div class="cl-detail-section">
+                                <div class="cl-detail-section-title">Description</div>
+                                <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;" id="cld-desc">Component description here.</p>
+                            </div>
+                            
+                            <div class="cl-detail-section">
+                                <div class="cl-detail-section-title">Specifications</div>
+                                <div class="cl-detail-row">
+                                    <span class="cl-detail-label">Default Value</span>
+                                    <span class="cl-detail-value" id="cld-default">-</span>
+                                </div>
+                                <div class="cl-detail-row">
+                                    <span class="cl-detail-label">Unit</span>
+                                    <span class="cl-detail-value" id="cld-unit">-</span>
+                                </div>
+                                <div class="cl-detail-row">
+                                    <span class="cl-detail-label">Simulation Model</span>
+                                    <span class="cl-detail-value" id="cld-sim">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="cl-detail-section">
+                                <div class="cl-detail-section-title">Pins</div>
+                                <div class="cl-pins-list" id="cld-pins">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                            
+                            <button class="cl-action-btn" id="cl-btn-use">Use in Design</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script>
+        // Custom UI logic for navigation and toasts
+        function switchView(viewId) {
+            document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(viewId).classList.add('active');
+            
+            const navItem = document.querySelector(`.nav-item[data-view="${viewId}"]`);
+            if (navItem) navItem.classList.add('active');
+            
+            if (viewId === 'view-home') {
+                document.body.classList.add('is-home-view');
+            } else {
+                document.body.classList.remove('is-home-view');
+            }
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                switchView(item.dataset.view);
+            });
+        });
+        
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = '✓';
+            if (type === 'error') icon = '✕';
+            if (type === 'warning') icon = '⚠';
+            
+            toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        // Expose to window for other scripts to use
+        window.showToast = showToast;
+        window.switchView = switchView;
+    </script>
+
+    <!-- Original JS files -->
+    <script type="application/javascript" src="./js/api.js"></script>
+    <script type="application/javascript" src="./js/state.js"></script>
+    <script type="application/javascript" src="./js/properties.js"></script>
+    <script type="application/javascript" src="./js/components.js"></script>
+    <script type="application/javascript" src="./js/canvas.js"></script>
+    <script type="application/javascript" src="./js/wiring.js"></script>
+    <script type="application/javascript" src="./js/validation.js"></script>
+    <script type="application/javascript" src="./js/ai.js"></script>
+    <script type="application/javascript" src="./js/toolbar.js"></script>
+    <script type="application/javascript" src="./js/app.js"></script>
+    <script type="application/javascript" src="./js/component-3d.js"></script>
+    
+    <script>
+        // Intercept AI generate button to switch view to design automatically
+        const originalHandleGenerate = AIUI.prototype.handleGenerate;
+        if (originalHandleGenerate) {
+            AIUI.prototype.handleGenerate = async function() {
+                const prompt = this.promptInput.value.trim();
+                if (prompt) {
+                    // Update AI UI indicator
+                    const indicator = document.getElementById('ai-status-indicator');
+                    if (indicator) indicator.innerText = '● ANALYZING PROMPT';
+                    
+                    // Call original
+                    await originalHandleGenerate.call(this);
+                    
+                    if (indicator) indicator.innerText = '● CIRCUIT READY';
+                    
+                    // Switch to design view after a short delay
+                    setTimeout(() => {
+                        window.switchView('view-design');
+                        window.showToast('Circuit generated successfully');
+                    }, 500);
+                } else {
+                    originalHandleGenerate.call(this);
+                }
+            };
+        }
+
+        // Theme initialization and toggle logic
+        // Theme initialization and toggle logic
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            const btnLight = document.getElementById('theme-btn-light');
+            const btnDark = document.getElementById('theme-btn-dark');
+            
+            const landingBtnLight = document.getElementById('landing-theme-light');
+            const landingBtnDark = document.getElementById('landing-theme-dark');
+            
+            if (theme === 'light') {
+                if (btnLight && btnDark) {
+                    btnLight.style.color = 'var(--text-primary)';
+                    btnLight.style.background = 'var(--bg-panel)';
+                    btnDark.style.color = 'var(--text-secondary)';
+                    btnDark.style.background = 'transparent';
+                }
+                if (landingBtnLight && landingBtnDark) {
+                    landingBtnLight.style.color = 'var(--text-primary)';
+                    landingBtnLight.style.background = 'var(--bg-panel)';
+                    landingBtnDark.style.color = 'var(--text-secondary)';
+                    landingBtnDark.style.background = 'transparent';
+                }
+            } else {
+                if (btnLight && btnDark) {
+                    btnDark.style.color = 'var(--text-primary)';
+                    btnDark.style.background = 'var(--bg-panel)';
+                    btnLight.style.color = 'var(--text-secondary)';
+                    btnLight.style.background = 'transparent';
+                }
+                if (landingBtnLight && landingBtnDark) {
+                    landingBtnDark.style.color = 'var(--text-primary)';
+                    landingBtnDark.style.background = 'var(--bg-panel)';
+                    landingBtnLight.style.color = 'var(--text-secondary)';
+                    landingBtnLight.style.background = 'transparent';
+                }
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        }
+
+        // Initialize theme from localStorage on load
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+    </script>
+</body>
+</html>

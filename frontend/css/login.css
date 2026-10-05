@@ -1,0 +1,211 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg-primary: #171614;
+    --bg-secondary: #171614;
+    --bg-panel: #24211D;
+    --bg-canvas: #101311;
+    --accent-primary: #C7F000;
+    --accent-secondary: #FF8A3D;
+    --accent-ai: #B9A7FF;
+    --text-primary: #F4F0E8;
+    --text-secondary: #A8A298;
+    --border-color: #3A3731;
+}
+
+[data-theme="light"] {
+    --bg-primary: #F5F3EE;
+    --bg-secondary: #F5F3EE;
+    --bg-panel: #FFFFFF;
+    --bg-canvas: #FAFAF7;
+    --accent-primary: #6F8F00;
+    --accent-secondary: #D96B20;
+    --accent-ai: #7564C7;
+    --text-primary: #24231F;
+    --text-secondary: #6F6A61;
+    --border-color: #D8D3C8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background-color 200ms, color 200ms, border-color 200ms, fill 200ms, stroke 200ms;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-image: 
+        linear-gradient(rgba(58, 55, 49, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(58, 55, 49, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.brand {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 1.5px;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.brand span {
+    display: block;
+    font-size: 11px;
+    color: var(--accent-primary);
+    font-weight: 500;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.login-box {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 40px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.login-header {
+    margin-bottom: 30px;
+}
+
+.login-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.login-header p {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    border-color: var(--accent-primary);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    font-size: 12px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.remember-me input[type="checkbox"] {
+    accent-color: var(--accent-primary);
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+}
+
+.remember-me label {
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.forgot-password {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.forgot-password:hover {
+    color: var(--text-primary);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--accent-primary);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.login-btn:hover {
+    opacity: 0.9;
+}
+
+.login-footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.login-footer a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 4px;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
